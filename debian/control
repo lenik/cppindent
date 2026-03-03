@@ -1,0 +1,16 @@
+Source: cppindent
+Section: devel
+Priority: optional
+Maintainer: cppindent Authors <cppindent@bodz.net>
+Build-Depends: debhelper-compat (= 13), meson, ninja-build
+Standards-Version: 4.7.0
+Homepage: https://github.com/cppindent/cppindent
+
+Package: cppindent
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: preprocessor directive indentation formatter for C/C++
+ cppindent is a small command-line utility that normalizes the indentation
+ of C and C++ preprocessor directives without touching normal C code. It is
+ designed for use in build systems and editor integrations.
+

@@ -1,0 +1,21 @@
+_cppindent()
+{
+    local cur prev
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    case "${cur}" in
+        -*)
+            COMPREPLY=( $(compgen -W "-a -b -i -t -w" -- "${cur}") )
+            return 0
+            ;;
+    esac
+
+    # Fallback to file completion for non-option arguments.
+    COMPREPLY=( $(compgen -f -- "${cur}") )
+    return 0
+}
+
+complete -F _cppindent cppindent
+

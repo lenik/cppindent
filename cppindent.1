@@ -1,0 +1,90 @@
+.TH CPPINDENT 1 "March 2026" "cppindent 0.1.0" "User Commands"
+.SH NAME
+cppindent \- reformat C/C++ preprocessor directive indentation
+.SH SYNOPSIS
+.B cppindent
+[\fIOPTIONS\fR] [\fISOURCES...\fR]
+.SH DESCRIPTION
+\fBcppindent\fR is a small formatting tool that normalizes the indentation of
+C and C++ preprocessor directives. It does not reformat normal C code; only
+lines whose first non\-whitespace character is '\fB#\fR' are considered.
+.PP
+The primary goal is to normalize indentation of nested macro blocks. Two
+indentation styles are supported:
+.IP \[bu]
+indent after '\fB#\fR' (default),
+.IP \[bu]
+indent before '\fB#\fR'.
+.SH OPTIONS
+.TP
+.B \-a
+Indent after '\fB#\fR' (default). Indentation characters are inserted between
+the '\fB#\fR' and the directive keyword.
+.TP
+.B \-b
+Indent before '\fB#\fR'. Indentation characters are placed before the
+directive marker; the '\fB#\fR' itself remains flush to the directive text.
+.TP
+.B \-i
+Edit files in place. For each source file, \fBcppindent\fR writes formatted
+output to a temporary file and atomically replaces the original on success.
+.TP
+.B \-w\fINUM\fR
+Use spaces for indentation with width \fINUM\fR per nesting depth (default
+4). This option disables tab indentation even if \fB\-t\fR was given earlier.
+.TP
+.B \-t
+Use literal tab characters for indentation. The number of tabs written is
+equal to the current nesting depth. This option overrides any previous
+\fB\-w\fR setting.
+.SH INDENTATION MODEL
+The nesting depth is derived only from conditional preprocessing directives.
+.PP
+The following increase depth (after the current line is formatted):
+.PP
+.RS
+\fB#if\fR, \fB#ifdef\fR, \fB#ifndef\fR
+.RE
+.PP
+The following decrease depth (before the current line is formatted):
+.PP
+.RS
+\fB#endif\fR
+.RE
+.PP
+The following keep the same depth:
+.PP
+.RS
+\fB#else\fR, \fB#elif\fR
+.RE
+.PP
+Other directives such as \fB#define\fR, \fBundef\fR, \fBinclude\fR, \fBpragma\fR,
+\fBerror\fR, \fBwarning\fR and \fBline\fR do not affect nesting depth.
+.SH INPUT AND OUTPUT
+If no source files are specified, \fBcppindent\fR reads from standard input
+and writes to standard output.
+.PP
+When one or more \fISOURCES\fR are provided without \fB\-i\fR, each file is
+read and the formatted result is written to standard output in sequence.
+.PP
+With \fB\-i\fR, each file is rewritten in place using a temporary file and
+an atomic rename. File permissions are preserved where possible.
+.SH DIAGNOSTICS
+If \fB#endif\fR is encountered at depth zero, a warning about an unmatched
+\fB#endif\fR is printed to standard error and depth is clamped to zero.
+.PP
+If the end of a file is reached with a positive depth, a warning about a
+missing \fB#endif\fR is printed.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Command line usage error.
+.TP
+.B 2
+File processing error.
+.SH AUTHOR
+Written for the cppindent project.
+
